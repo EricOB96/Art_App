@@ -1,13 +1,40 @@
 /* Global Styles */
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f8f9fa;
+    background-color: #d4d9df;
 }
 
+
+
 /* Navbar */
+.navbar {
+    background-color: #5E35B1;
+}
+
 .navbar-brand {
+    color: white;
+    font-weight: bold;
+    font-size: 42px;
+}
+.navbar-brand:hover {
+    color: rgba(126, 117, 117, 0.8);
+}
+
+
+.navbar .nav-item .nav-link {
+    color: white;
     font-weight: bold;
 }
+
+.navbar  .nav-item .nav-link:hover {
+    color: rgba(126, 117, 117, 0.8);
+}
+
+/* Explore Artwork */
+.card-header {
+    background-color: #5E35B1 ;
+}
+
 
 /* Artwork Display */
 .artwork-card {

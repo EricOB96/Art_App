@@ -54,6 +54,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Search artworks
+// Search artworks
 router.get('/search/query', async (req, res) => {
     try {
         const db = getDatabase();
@@ -65,15 +66,20 @@ router.get('/search/query', async (req, res) => {
 
         let query = {};
 
-        // Search in specific field if provided, otherwise search in title, artist, and year
-        if (field) {
+        // handling for Year field
+        if (field === 'Year') {
+            // Search in the Date field instead
+            query = { Date: { $regex: term, $options: 'i' } };
+        } else if (field) {
+            // For other fields, use the field as provided
             query[field] = { $regex: term, $options: 'i' };
         } else {
+            // Default search in multiple fields
             query = {
                 $or: [
                     { Title: { $regex: term, $options: 'i' } },
                     { Artist: { $regex: term, $options: 'i' } },
-                    { Year: { $regex: term, $options: 'i' } }
+                    { Date: { $regex: term, $options: 'i' } }
                 ]
             };
         }

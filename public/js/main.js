@@ -1,15 +1,19 @@
-// API Base URL
-const API_BASE_URL = 'http://localhost:8080/api/artworks';
+// API Base URLs
+const ARTWORKS_API_URL = 'http://localhost:8080/api/artworks';
+const ARTISTS_API_URL = 'http://localhost:8080/api/artists';
 
 // State
 let currentPage = 1;
 let totalPages = 1;
 let artworks = [];
+let artists = [];
 let currentArtworkIndex = 0;
 let currentFilters = {};
+let currentView = 'artworks'; 
 
 // DOM Elements
 const artworkGrid = document.getElementById('artworkGrid');
+const artistsGrid = document.getElementById('artistsGrid');
 const pagination = document.getElementById('pagination');
 const currentArtworkDisplay = document.getElementById('currentArtwork');
 const paginationInfo = document.getElementById('paginationInfo');
@@ -25,10 +29,15 @@ const saveArtworkBtn = document.getElementById('saveArtworkBtn');
 const editArtworkForm = document.getElementById('editArtworkForm');
 const updateArtworkBtn = document.getElementById('updateArtworkBtn');
 const deleteArtworkBtn = document.getElementById('deleteArtworkBtn');
+const viewArtworksBtn = document.getElementById('viewArtworksBtn');
+const viewArtistsBtn = document.getElementById('viewArtistsBtn');
 
 // Bootstrap Modals
 const addArtworkModal = new bootstrap.Modal(document.getElementById('addArtworkModal'));
 const editArtworkModal = new bootstrap.Modal(document.getElementById('editArtworkModal'));
+let artistDetailsModal = document.getElementById('artistDetailsModal')
+    ? new bootstrap.Modal(document.getElementById('artistDetailsModal'))
+    : null;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
@@ -43,7 +52,43 @@ document.addEventListener('DOMContentLoaded', () => {
     saveArtworkBtn.addEventListener('click', handleAddArtwork);
     updateArtworkBtn.addEventListener('click', handleUpdateArtwork);
     deleteArtworkBtn.addEventListener('click', handleDeleteArtwork);
+
+    // View toggling
+    if (viewArtworksBtn) {
+        viewArtworksBtn.addEventListener('click', () => {
+            setCurrentView('artworks');
+        });
+    }
+
+    if (viewArtistsBtn) {
+        viewArtistsBtn.addEventListener('click', () => {
+            setCurrentView('artists');
+        });
+    }
 });
+
+// Set current view (artworks or artists)
+function setCurrentView(view) {
+    currentView = view;
+
+    if (view === 'artworks') {
+        document.getElementById('artworksContainer').classList.remove('d-none');
+        if (document.getElementById('artistsContainer')) {
+            document.getElementById('artistsContainer').classList.add('d-none');
+        }
+        viewArtworksBtn.classList.add('active');
+        viewArtistsBtn.classList.remove('active');
+        fetchArtworks(1);
+    } else {
+        document.getElementById('artworksContainer').classList.add('d-none');
+        if (document.getElementById('artistsContainer')) {
+            document.getElementById('artistsContainer').classList.remove('d-none');
+        }
+        viewArtworksBtn.classList.remove('active');
+        viewArtistsBtn.classList.add('active');
+        fetchArtists(1);
+    }
+}
 
 // Fetch artworks from the API
 async function fetchArtworks(page = 1, filters = {}) {
@@ -57,11 +102,11 @@ async function fetchArtworks(page = 1, filters = {}) {
             </div>
         `;
 
-        let url = `${API_BASE_URL}?page=${page}&limit=10`;
+        let url = `${ARTWORKS_API_URL}?page=${page}&limit=10`;
 
         // Add filters to URL if they exist
         if (filters.search) {
-            url = `${API_BASE_URL}/search/query?term=${encodeURIComponent(filters.search)}`;
+            url = `${ARTWORKS_API_URL}/search/query?term=${encodeURIComponent(filters.search)}`;
             if (filters.field) {
                 url += `&field=${encodeURIComponent(filters.field)}`;
             }
@@ -105,6 +150,57 @@ async function fetchArtworks(page = 1, filters = {}) {
     }
 }
 
+// Fetch artists from the API
+async function fetchArtists(page = 1, searchTerm = '') {
+    try {
+        if (!artistsGrid) return;
+
+        artistsGrid.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading artists...</p>
+            </div>
+        `;
+
+        let url = `${ARTISTS_API_URL}?page=${page}&limit=20`;
+
+        // Add search term if it exists
+        if (searchTerm) {
+            url = `${ARTISTS_API_URL}/search/query?term=${encodeURIComponent(searchTerm)}`;
+        }
+
+        const response = await axios.get(url);
+
+        if (searchTerm) {
+            // Search results
+            artists = response.data;
+            totalPages = 1;
+        } else {
+            // Regular results
+            artists = response.data.data;
+            currentPage = response.data.page;
+            totalPages = response.data.totalPages;
+        }
+
+        // Display the artists
+        renderArtistsGrid();
+        renderPagination();
+    } catch (error) {
+        console.error('Error fetching artists:', error);
+        if (artistsGrid) {
+            artistsGrid.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        Error loading artists. Please try again later.
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+
 // Render the artwork grid
 function renderArtworkGrid() {
     if (artworks.length === 0) {
@@ -122,13 +218,13 @@ function renderArtworkGrid() {
         gridHTML += `
             <div class="col-md-3 mb-4">
                 <div class="card artwork-card h-100" onclick="selectArtwork(${index})">
-                    <img src="${artwork.ImageURL || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                    <img src="${artwork.ImageURL || artwork.ThumbnailURL || 'https://placeholder.co/300x200?text=No+Image'}" 
                         class="card-img-top artwork-image" 
                         alt="${artwork.Title}">
                     <div class="card-body">
                         <h5 class="card-title">${artwork.Title}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">${artwork.Artist}</h6>
-                        <p class="card-text">${artwork.Year}</p>
+                        <h6 class="card-subtitle mb-2 text-muted">${artwork.Artist || 'Unknown Artist'}</h6>
+                        <p class="card-text">${artwork.Year || artwork.Date || 'Date unknown'}</p>
                     </div>
                 </div>
             </div>
@@ -136,6 +232,178 @@ function renderArtworkGrid() {
     });
 
     artworkGrid.innerHTML = gridHTML;
+}
+
+// Render the artists grid
+function renderArtistsGrid() {
+    if (!artistsGrid) return;
+
+    if (artists.length === 0) {
+        artistsGrid.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info">No artists found</div>
+            </div>
+        `;
+        return;
+    }
+
+    let gridHTML = '';
+
+    artists.forEach((artist, index) => {
+        gridHTML += `
+            <div class="col-md-3 mb-4">
+                <div class="card artist-card h-100" onclick="showArtistDetails(${artist.ConstituentID})">
+                    <div class="card-body">
+                        <h5 class="card-title">${artist.DisplayName || 'Unknown Artist'}</h5>
+                        <p class="card-text">
+                            ${artist.Nationality ? `<strong>Nationality:</strong> ${artist.Nationality}<br>` : ''}
+                            ${artist.Gender ? `<strong>Gender:</strong> ${artist.Gender}<br>` : ''}
+                            ${artist.BeginDate ? `<strong>Born:</strong> ${artist.BeginDate}<br>` : ''}
+                            ${artist.EndDate ? `<strong>Died:</strong> ${artist.EndDate}` : ''}
+                        </p>
+                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); fetchArtistArtworks(${artist.ConstituentID})">
+                            View Artworks
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    artistsGrid.innerHTML = gridHTML;
+}
+
+// Show artist details and artworks
+async function showArtistDetails(constituentId) {
+    try {
+        // Check if modal exists in DOM
+        if (!document.getElementById('artistDetailsModal')) {
+            createArtistModal();
+        }
+
+        const artistModalContent = document.getElementById('artistModalContent');
+        artistModalContent.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading artist information...</p>
+            </div>
+        `;
+
+        // Show the modal
+        if (artistDetailsModal) {
+            artistDetailsModal.show();
+        } else {
+            // create the modal fist if doesn't exist
+            if (!document.getElementById('artistDetailsModal')) {
+                createArtistModal();
+            }
+
+            artistDetailsModal = new bootstrap.Modal(document.getElementById('artistDetailsModal'));
+            artistDetailsModal.show();
+        }
+
+        // Fetch artist details
+        const response = await axios.get(`${ARTISTS_API_URL}/constituent/${constituentId}`);
+        const artist = response.data;
+
+        // Fetch artist's artworks
+        const artworksResponse = await axios.get(`${ARTISTS_API_URL}/${constituentId}/artworks`);
+        const artistArtworks = artworksResponse.data.artworks;
+
+        // Build content for modal
+        let modalContent = `
+            <div class="row">
+                <div class="col-12">
+                    <h2>${artist.DisplayName}</h2>
+                    <p>
+                        ${artist.Nationality ? `<strong>Nationality:</strong> ${artist.Nationality}<br>` : ''}
+                        ${artist.Gender ? `<strong>Gender:</strong> ${artist.Gender}<br>` : ''}
+                        ${artist.BeginDate ? `<strong>Born:</strong> ${artist.BeginDate}<br>` : ''}
+                        ${artist.EndDate ? `<strong>Died:</strong> ${artist.EndDate}<br>` : ''}
+                        ${artist.ArtistBio ? `<strong>Bio:</strong> ${artist.ArtistBio}` : ''}
+                    </p>
+                </div>
+            </div>
+            
+            <h3 class="mt-4">Artworks by ${artist.DisplayName}</h3>
+        `;
+
+        if (artistArtworks.length === 0) {
+            modalContent += `<p>No artworks found for this artist.</p>`;
+        } else {
+            modalContent += `<div class="row">`;
+
+            artistArtworks.forEach(artwork => {
+                modalContent += `
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <img src="${artwork.ImageURL || artwork.ThumbnailURL || 'https://placeholder.co/300x200?text=No+Image'}" 
+                                class="card-img-top" 
+                                alt="${artwork.Title}" 
+                                style="height: 150px; object-fit: contain;">
+                            <div class="card-body">
+                                <h5 class="card-title">${artwork.Title}</h5>
+                                <p class="card-text">${artwork.Date || artwork.Year || 'Date unknown'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            modalContent += `</div>`;
+        }
+
+        artistModalContent.innerHTML = modalContent;
+
+    } catch (error) {
+        console.error('Error fetching artist details:', error);
+        if (document.getElementById('artistModalContent')) {
+            document.getElementById('artistModalContent').innerHTML = `
+                <div class="alert alert-danger">
+                    Error loading artist details. Please try again later.
+                </div>
+            `;
+        }
+    }
+}
+
+// Create artist modal if it doesn't exist
+function createArtistModal() {
+    const modalHTML = `
+        <div class="modal fade" id="artistDetailsModal" tabindex="-1" aria-labelledby="artistDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="artistDetailsModalLabel">Artist Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="artistModalContent">
+                        <!-- Content will be loaded here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    artistDetailsModal = new bootstrap.Modal(document.getElementById('artistDetailsModal'));
+}
+
+// Fetch artworks by an artist
+async function fetchArtistArtworks(constituentId) {
+    try {
+        event.stopPropagation(); // Prevent the card click event
+
+        showArtistDetails(constituentId);
+    } catch (error) {
+        console.error('Error fetching artist artworks:', error);
+        showToast('Error', 'Failed to load artist artworks', 'danger');
+    }
 }
 
 // Render pagination controls
@@ -184,7 +452,12 @@ function changePage(page) {
     }
 
     currentPage = page;
-    fetchArtworks(currentPage, currentFilters);
+
+    if (currentView === 'artworks') {
+        fetchArtworks(currentPage, currentFilters);
+    } else {
+        fetchArtists(currentPage);
+    }
 }
 
 // Display the current artwork
@@ -198,17 +471,31 @@ function displayCurrentArtwork() {
 
     const artwork = artworks[currentArtworkIndex];
 
+    // Check if artwork has ConstituentID to potentially display artist info
+    let artistButton = '';
+    if (artwork.ConstituentID) {
+        const constituentId = Array.isArray(artwork.ConstituentID)
+            ? artwork.ConstituentID[0]
+            : artwork.ConstituentID;
+
+        artistButton = `
+            <button class="btn btn-outline-secondary ms-2" onclick="showArtistDetails(${constituentId})">
+                View Artist
+            </button>
+        `;
+    }
+
     currentArtworkDisplay.innerHTML = `
         <div class="row">
             <div class="col-md-6 text-center">
-                <img src="${artwork.ImageURL || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                <img src="${artwork.ImageURL || artwork.ThumbnailURL || 'https://placeholder.co/300x200?text=No+Image'}" 
                     class="img-fluid current-artwork-image" 
                     alt="${artwork.Title}">
             </div>
             <div class="col-md-6">
                 <h3>${artwork.Title}</h3>
-                <h5>${artwork.Artist}</h5>
-                <p>${artwork.Year}</p>
+                <h5>${artwork.Artist || 'Unknown Artist'}</h5>
+                <p>${artwork.Year || artwork.Date || 'Date unknown'}</p>
                 
                 <dl class="row artwork-details">
                     <dt class="col-sm-3">Medium</dt>
@@ -216,11 +503,24 @@ function displayCurrentArtwork() {
                     
                     <dt class="col-sm-3">Dimensions</dt>
                     <dd class="col-sm-9">${artwork.Dimensions || 'Not specified'}</dd>
+                    
+                    ${artwork.Department ? `
+                    <dt class="col-sm-3">Department</dt>
+                    <dd class="col-sm-9">${artwork.Department}</dd>
+                    ` : ''}
+                    
+                    ${artwork.Classification ? `
+                    <dt class="col-sm-3">Classification</dt>
+                    <dd class="col-sm-9">${artwork.Classification}</dd>
+                    ` : ''}
                 </dl>
                 
-                <button class="btn btn-primary" onclick="editArtwork(${currentArtworkIndex})">
-                    Edit Artwork
-                </button>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="editArtwork(${currentArtworkIndex})">
+                        Edit Artwork
+                    </button>
+                    ${artistButton}
+                </div>
             </div>
         </div>
     `;
@@ -267,13 +567,21 @@ function handleSearch(e) {
     const searchTerm = searchInput.value.trim();
 
     if (searchTerm) {
-        currentFilters = {
-            search: searchTerm
-        };
-        fetchArtworks(1, currentFilters);
+        if (currentView === 'artworks') {
+            currentFilters = {
+                search: searchTerm
+            };
+            fetchArtworks(1, currentFilters);
+        } else {
+            fetchArtists(1, searchTerm);
+        }
     } else {
         currentFilters = {};
-        fetchArtworks(1);
+        if (currentView === 'artworks') {
+            fetchArtworks(1);
+        } else {
+            fetchArtists(1);
+        }
     }
 }
 
@@ -302,10 +610,10 @@ function editArtwork(index) {
     document.getElementById('editArtworkId').value = artwork._id;
     document.getElementById('editArtworkTitle').value = artwork.Title || '';
     document.getElementById('editArtworkArtist').value = artwork.Artist || '';
-    document.getElementById('editArtworkYear').value = artwork.Year || '';
+    document.getElementById('editArtworkYear').value = artwork.Year || artwork.Date || '';
     document.getElementById('editArtworkMedium').value = artwork.Medium || '';
     document.getElementById('editArtworkDimensions').value = artwork.Dimensions || '';
-    document.getElementById('editArtworkImageURL').value = artwork.ImageURL || '';
+    document.getElementById('editArtworkImageURL').value = artwork.ImageURL || artwork.ThumbnailURL || '';
 
     // Show the edit modal
     editArtworkModal.show();
@@ -323,7 +631,7 @@ async function handleAddArtwork() {
     };
 
     try {
-        const response = await axios.post(API_BASE_URL, newArtwork);
+        const response = await axios.post(ARTWORKS_API_URL, newArtwork);
 
         // Hide the modal
         addArtworkModal.hide();
@@ -356,7 +664,7 @@ async function handleUpdateArtwork() {
     };
 
     try {
-        const response = await axios.put(`${API_BASE_URL}/${artworkId}`, updatedArtwork);
+        const response = await axios.put(`${ARTWORKS_API_URL}/${artworkId}`, updatedArtwork);
 
         // Hide the modal
         editArtworkModal.hide();
@@ -382,7 +690,7 @@ async function handleDeleteArtwork() {
 
     if (confirm('Are you sure you want to delete this artwork?')) {
         try {
-            await axios.delete(`${API_BASE_URL}/${artworkId}`);
+            await axios.delete(`${ARTWORKS_API_URL}/${artworkId}`);
 
             // Hide the modal
             editArtworkModal.hide();
@@ -436,7 +744,7 @@ function showToast(title, message, type = 'info') {
     });
     toast.show();
 
-    // Remove toast element after it's hidden
+    // Remove toast element 
     toastEl.addEventListener('hidden.bs.toast', () => {
         toastEl.remove();
     });
