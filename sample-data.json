@@ -1,0 +1,82 @@
+[
+    {
+        "Title": "The Starry Night",
+        "Artist": "Vincent van Gogh",
+        "Year": "1889",
+        "Medium": "Oil on canvas",
+        "Dimensions": "73.7 cm × 92.1 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjQ2NzUxNyJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=b6f71898e32868f9"
+    },
+    {
+        "Title": "Les Demoiselles d'Avignon",
+        "Artist": "Pablo Picasso",
+        "Year": "1907",
+        "Medium": "Oil on canvas",
+        "Dimensions": "243.9 cm × 233.7 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjQzODQ1MiJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=c96b77523bed2e70"
+    },
+    {
+        "Title": "The Persistence of Memory",
+        "Artist": "Salvador Dalí",
+        "Year": "1931",
+        "Medium": "Oil on canvas",
+        "Dimensions": "24.1 cm × 33 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjM4NjQ3MCJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=639aac1df85949ef"
+    },
+    {
+        "Title": "Water Lilies",
+        "Artist": "Claude Monet",
+        "Year": "1914-1926",
+        "Medium": "Oil on canvas",
+        "Dimensions": "200.7 cm × 426.7 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjE1MzEzMyJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=98ec94361a204a86"
+    },
+    {
+        "Title": "Campbell's Soup Cans",
+        "Artist": "Andy Warhol",
+        "Year": "1962",
+        "Medium": "Synthetic polymer paint on thirty-two canvases",
+        "Dimensions": "50.8 × 40.6 cm each",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjMxODI0MiJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=269531510f1f9452"
+    },
+    {
+        "Title": "The Red Studio",
+        "Artist": "Henri Matisse",
+        "Year": "1911",
+        "Medium": "Oil on canvas",
+        "Dimensions": "181 cm × 219.1 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjE2NTQ1OSJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=cb97d758644f3d65"
+    },
+    {
+        "Title": "Christina's World",
+        "Artist": "Andrew Wyeth",
+        "Year": "1948",
+        "Medium": "Tempera on panel",
+        "Dimensions": "81.9 cm × 121.3 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjE2NjI0OSJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=f8b8caa3bfa9e8e1"
+    },
+    {
+        "Title": "Drowning Girl",
+        "Artist": "Roy Lichtenstein",
+        "Year": "1963",
+        "Medium": "Oil and synthetic polymer paint on canvas",
+        "Dimensions": "171.6 cm × 169.5 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjE2NDQxMCJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=27d54acba00c14cf"
+    },
+    {
+        "Title": "One: Number 31, 1950",
+        "Artist": "Jackson Pollock",
+        "Year": "1950",
+        "Medium": "Oil and enamel paint on canvas",
+        "Dimensions": "269.5 cm × 530.8 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjE2ODg0MSJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=8bb1325dc7424812"
+    },
+    {
+        "Title": "Broadway Boogie Woogie",
+        "Artist": "Piet Mondrian",
+        "Year": "1942-1943",
+        "Medium": "Oil on canvas",
+        "Dimensions": "127 cm × 127 cm",
+        "ImageURL": "https://www.moma.org/media/W1siZiIsIjE2NzE3NSJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA5MCAtcmVzaXplIDIwMDB4MjAwMFx1MDAzZSJdXQ.jpg?sha=9384be792c40da1a"
+    }
+]
