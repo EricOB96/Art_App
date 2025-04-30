@@ -1,7 +1,7 @@
 // server/routes/artists.js
 const express = require('express');
 const { ObjectId } = require('mongodb');
-const { getDatabase } = require('../db');
+const { getDatabase } = require('../services/db.service');
 
 const router = express.Router();
 

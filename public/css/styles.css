@@ -114,6 +114,100 @@ body {
     min-height: 300px;
 }
 
+.card-img-container {
+    height: 180px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+/* Image styling within cards */
+.card-img-container img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Card title styling */
+.artwork-card .card-title {
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.5rem;
+}
+
+/* Card subtitle styling */
+.artwork-card .card-subtitle {
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.5rem;
+}
+
+/* Card text styling */
+.artwork-card .card-text {
+    font-size: 0.8rem;
+}
+
+/* Card body layout */
+.artwork-card .card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+/* Position button at bottom of card */
+.artwork-card .btn-container {
+    margin-top: auto;
+}
+
+/* Hover effects for cards */
+.artwork-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.artwork-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styling */
+.artwork-card .btn-danger {
+    width: 100%;
+}
+
+
+/* Styles for favorites display */
+#favoritesContainer {
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 80px);
+}
+
+.artwork-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.artwork-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+#favoritesContainer {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
 /* Toast notifications */
 .toast-container {
     position: fixed;

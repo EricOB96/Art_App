@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About MoMA Art Collection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                Art Collection
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Browse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/about">About This Page</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">About MoMA Art Collection Application</h1>
+
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        Application Overview
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            The Art Collection application is a web-based platform that allows users to explore,
+                            manage, and interact with artworks from the Museum of Modern Art's collection. This
+                            application leverages modern web technologies to provide a responsive and user-friendly
+                            interface for art enthusiasts, researchers, and casual users alike.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        Features Implemented
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>CRUD Operations</strong> - Able to add, view, update, delete artwork entries.</li>
+                            <li><strong>User authenication</strong> - register/login functionality using bcrypt for password hashing 
+                                and JWT for session management.</li>
+                            <li><strong>Personal User Profiles</strong> - Able to check profile details as well as add favourite artworks
+                            and see them.</li>
+                            <li><strong>Search functionality</strong> - Find specific artworks as well as filter with artists, Medium and year.</li>
+                            <li><strong>Browsing Artworks</strong> - Browse through pages of artwork.</li>
+                            <li><strong>Responsive Interface</strong> - Clean responsive interface that works with smaller screens.</li>
+                        </ul>
+                    </div>
+                    </div>
+
+
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        Technologies Used
+                    </div>
+                    <div class="card-body">
+                        <h5>Backend Technologies:</h5>
+                        <ul>
+                            <li><strong>Node.js</strong></li>
+                            <li><strong>Express.js</strong></li>
+                            <li><strong>MongoDB</strong></li>
+                            <li><strong>RESTful API</strong></li>
+                            <li><strong>JWT</strong></li>
+                        </ul>
+
+                        <h5>Frontend Technologies:</h5>
+                        <ul>
+                            <li><strong>HTML5</strong></li>
+                            <li><strong>CSS3</strong></li>
+                            <li><strong>JavaScript (ES6+)</strong></li>
+                            <li><strong>Axios</strong></li>
+                            <li><strong>Bootstrap 5</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        Application Weaknesses
+                    </div>
+                    <div class="card-body">
+                        <p>While efforts have been made to create a robust application, there are several areas where
+                            improvements could be made:</p>
+
+                        <ul>
+                            <li><strong>Performance Optimization</strong> - With many artworks, pagination
+                                helps, but better caching and data fetching strategies could improve
+                                performance.</li>
+                            <li><strong>Error Handling</strong> - While basic error handling is implemented, a more
+                                comprehensive approach would improve user experience during unexpected errors.</li>
+                            <li><strong>Validation</strong> - Input validation could be more robust to ensure data
+                                consistency.Some Artworks were missing images.</li>
+                            <li><strong>Security</strong> - Improved security methods to prevent hacking.</li>
+                            <li><strong>Accessibility</strong> - The application could be improved to better support
+                                assistive technologies.</li>
+                            <li><strong>Mobile Experience</strong> - while the app is still somewhat responsive it could be better 
+                                to have a dedicated mobile app for better user experience.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        Alternative Implementation Approaches
+                    </div>
+                    <div class="card-body">
+                        <p>There are several alternative approaches that could be considered for implementing this
+                            application:</p>
+
+                        <ul>
+                            <li><strong>Full-Stack Frameworks</strong> - Instead of building separate frontend and
+                                backend components, a full-stack framework like Next.js (React) or Nuxt.js (Vue) could
+                                provide a more integrated development experience.</li>
+                            <li><strong>GraphQL Instead of REST</strong> - Using GraphQL could provide more flexibility
+                                in querying data and reduce over-fetching or under-fetching of data.</li>
+                            <li><strong>Server-side Rendering</strong> - Implementing server-side rendering could
+                                improve initial load times and SEO (Search Engine Optimization) capabilities.</li>
+                            <li><strong>Alternative Databases</strong> - While MongoDB works well for this application,
+                                a SQL database like PostgreSQL could offer advantages for complex queries and
+                                relationships.</li>
+                            <li><strong>Containerisation</strong> - Docker could make deployment more consistant across environments </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>
+                Data sourced from <a href="https://github.com/MuseumofModernArt/collection" class="text-light">MoMA's
+                    GitHub Repository</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

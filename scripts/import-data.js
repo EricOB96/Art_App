@@ -22,7 +22,7 @@ async function importData() {
 
     try {
         // Create collections if they don't exist
-        console.log('Creating collections...');
+        console.log('Creating collections');
         await db.createCollection('artworks');
         await db.createCollection('artists');
 
@@ -36,7 +36,7 @@ async function importData() {
         await createRelationships(db);
 
         // Create indexes for better performance
-        console.log('Creating indexes...');
+        console.log('Creating indexes');
         await db.collection('artworks').createIndex({ Title: 1 });
         await db.collection('artworks').createIndex({ Artist: 1 });
         await db.collection('artworks').createIndex({ Year: 1 });
@@ -95,10 +95,10 @@ async function importArtists(db) {
         return;
     }
 
-    // Read and parse artists data file
-    console.log('Reading artists data...');
+    // Read and parse artists data 
+    console.log('Reading artists data');
     const rawData = fs.readFileSync(artistsPath, 'utf8');
-    console.log('Parsing artists JSON data...');
+    console.log('Parsing artists JSON data');
     const artists = JSON.parse(rawData);
 
     console.log(`Found ${artists.length} artists to import.`);
@@ -115,13 +115,13 @@ async function importArtists(db) {
         console.log(`Artists progress: ${imported}/${artists.length} (${Math.round(imported / artists.length * 100)}%)`);
     }
 
-    console.log('Verifying artists import...');
+    console.log('Verifying artists import');
     const count = await db.collection('artists').countDocuments();
     console.log(`Imported ${count} artists successfully.`);
 }
-
+// function creates relationships between artworks and artists
 async function createRelationships(db) {
-    // This function creates relationships between artworks and artists
+    
     // based on the ConstituentID field
     console.log('Creating relationships between artworks and artists...');
 
@@ -136,7 +136,7 @@ async function createRelationships(db) {
             artistMap[artist.ConstituentID] = artist;
         });
 
-        console.log('Updating artworks with artist information...');
+        console.log('Updating artworks with artist information');
         let updated = 0;
 
         for (const artwork of artworks) {
@@ -157,7 +157,7 @@ async function createRelationships(db) {
                     updated++;
 
                     if (updated % 1000 === 0) {
-                        console.log(`Updated ${updated} artworks with artist details...`);
+                        console.log(`Updated ${updated} artworks with artist details`);
                     }
                 }
             }

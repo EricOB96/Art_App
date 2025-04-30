@@ -9,7 +9,7 @@ let artworks = [];
 let artists = [];
 let currentArtworkIndex = 0;
 let currentFilters = {};
-let currentView = 'artworks'; 
+let currentView = 'artworks';
 
 // DOM Elements
 const artworkGrid = document.getElementById('artworkGrid');
@@ -41,6 +41,11 @@ let artistDetailsModal = document.getElementById('artistDetailsModal')
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize auth module
+    if (window.auth && typeof window.auth.initAuth === 'function') {
+        window.auth.initAuth();
+    }
+
     // Load initial artworks
     fetchArtworks();
 
@@ -54,40 +59,49 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteArtworkBtn.addEventListener('click', handleDeleteArtwork);
 
     // View toggling
-    if (viewArtworksBtn) {
-        viewArtworksBtn.addEventListener('click', () => {
-            setCurrentView('artworks');
-        });
-    }
+    viewArtworksBtn.addEventListener('click', () => {
+        setCurrentView('artworks');
+    });
 
-    if (viewArtistsBtn) {
-        viewArtistsBtn.addEventListener('click', () => {
-            setCurrentView('artists');
-        });
-    }
+    viewArtistsBtn.addEventListener('click', () => {
+        setCurrentView('artists');
+    });
 });
 
 // Set current view (artworks or artists)
 function setCurrentView(view) {
     currentView = view;
 
+    hideAllContainers();
+
     if (view === 'artworks') {
         document.getElementById('artworksContainer').classList.remove('d-none');
-        if (document.getElementById('artistsContainer')) {
-            document.getElementById('artistsContainer').classList.add('d-none');
-        }
         viewArtworksBtn.classList.add('active');
         viewArtistsBtn.classList.remove('active');
         fetchArtworks(1);
     } else {
-        document.getElementById('artworksContainer').classList.add('d-none');
-        if (document.getElementById('artistsContainer')) {
-            document.getElementById('artistsContainer').classList.remove('d-none');
-        }
+        document.getElementById('artistsContainer').classList.remove('d-none');
         viewArtworksBtn.classList.remove('active');
         viewArtistsBtn.classList.add('active');
         fetchArtists(1);
     }
+}
+
+// Helper function to hide all content containers
+function hideAllContainers() {
+    const containers = [
+        'artworksContainer',
+        'artistsContainer',
+        'favoritesContainer',
+        'profileContainer'
+    ];
+
+    containers.forEach(id => {
+        const container = document.getElementById(id);
+        if (container) {
+            container.classList.add('d-none');
+        }
+    });
 }
 
 // Fetch artworks from the API
@@ -115,7 +129,6 @@ async function fetchArtworks(page = 1, filters = {}) {
         const response = await axios.get(url);
 
         if (filters.search) {
-            // Search results have a different structure
             artworks = response.data;
             totalPages = 1; // Just one page for search results
         } else {
@@ -137,6 +150,11 @@ async function fetchArtworks(page = 1, filters = {}) {
             currentArtworkDisplay.innerHTML = `
                 <div class="alert alert-info">No artworks found</div>
             `;
+        }
+
+        // Update favorite buttons if user is logged in
+        if (window.favorites && typeof window.favorites.updateFavoriteButtons === 'function') {
+            window.favorites.updateFavoriteButtons();
         }
     } catch (error) {
         console.error('Error fetching artworks:', error);
@@ -295,11 +313,10 @@ async function showArtistDetails(constituentId) {
         if (artistDetailsModal) {
             artistDetailsModal.show();
         } else {
-            // create the modal fist if doesn't exist
+            // Create the modal first if it doesn't exist
             if (!document.getElementById('artistDetailsModal')) {
                 createArtistModal();
             }
-
             artistDetailsModal = new bootstrap.Modal(document.getElementById('artistDetailsModal'));
             artistDetailsModal.show();
         }
@@ -312,7 +329,7 @@ async function showArtistDetails(constituentId) {
         const artworksResponse = await axios.get(`${ARTISTS_API_URL}/${constituentId}/artworks`);
         const artistArtworks = artworksResponse.data.artworks;
 
-        // Build content for modal
+        // Build content
         let modalContent = `
             <div class="row">
                 <div class="col-12">
@@ -471,7 +488,7 @@ function displayCurrentArtwork() {
 
     const artwork = artworks[currentArtworkIndex];
 
-    // Check if artwork has ConstituentID to potentially display artist info
+    // Check if artwork has ConstituentID
     let artistButton = '';
     if (artwork.ConstituentID) {
         const constituentId = Array.isArray(artwork.ConstituentID)
@@ -482,6 +499,22 @@ function displayCurrentArtwork() {
             <button class="btn btn-outline-secondary ms-2" onclick="showArtistDetails(${constituentId})">
                 View Artist
             </button>
+        `;
+    }
+
+    // Add favorite button if user is logged in
+    let favoriteButton = '';
+    if (window.auth && window.auth.isLoggedIn && window.auth.isLoggedIn()) {
+        const userFavorites = window.auth.userFavorites ? window.auth.userFavorites() : [];
+        const isFavorite = userFavorites.includes(artwork._id);
+        const favoriteButtonClass = isFavorite ? 'btn-danger' : 'btn-outline-danger';
+        const favoriteIconClass = isFavorite ? 'bi-heart-fill' : 'bi-heart';
+        const favoriteText = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+
+        favoriteButton = `
+          <button class="btn ${favoriteButtonClass} ms-2" id="favoriteBtn" onclick="window.favorites.toggleFavorite('${artwork._id}')">
+            <i class="bi ${favoriteIconClass}"></i> ${favoriteText}
+          </button>
         `;
     }
 
@@ -519,6 +552,7 @@ function displayCurrentArtwork() {
                     <button class="btn btn-primary" onclick="editArtwork(${currentArtworkIndex})">
                         Edit Artwork
                     </button>
+                    ${favoriteButton}
                     ${artistButton}
                 </div>
             </div>
@@ -707,13 +741,13 @@ async function handleDeleteArtwork() {
     }
 }
 
-// Show a toast notification
+// Toast notification function
 function showToast(title, message, type = 'info') {
     // Create toast container if it doesn't exist
     let toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
-        toastContainer.className = 'toast-container';
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
         document.body.appendChild(toastContainer);
     }
 
@@ -744,8 +778,11 @@ function showToast(title, message, type = 'info') {
     });
     toast.show();
 
-    // Remove toast element 
+    // Remove toast element after it's hidden
     toastEl.addEventListener('hidden.bs.toast', () => {
         toastEl.remove();
     });
 }
+
+// Make showToast globally
+window.showToast = showToast;

@@ -1,1 +1,5 @@
 node_modules/
+
+// files to big for github, download from github from MoMA to get data sets
+Artists.json
+Artworks.json

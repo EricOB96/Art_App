@@ -1,7 +1,7 @@
 // server/routes/art.js
 const express = require('express');
 const { ObjectId } = require('mongodb');
-const { getDatabase } = require('../db');
+const { getDatabase } = require('../services/db.service');
 
 const router = express.Router();
 
@@ -53,7 +53,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Search artworks
+
 // Search artworks
 router.get('/search/query', async (req, res) => {
     try {

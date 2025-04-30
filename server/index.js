@@ -1,10 +1,10 @@
-// server/index.js
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { connectToDatabase } = require('./db');
-const artRoutes = require('./routes/art');
-const artistRoutes = require('./routes/artists'); // New import for artists routes
+const { connectToDatabase } = require('./services/db.service');
+const artRoutes = require('./routes/art.routes');  
+const artistRoutes = require('./routes/artist.routes');  
+const userRoutes = require('./routes/user.routes');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -16,7 +16,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Routes
 app.use('/api/artworks', artRoutes);
-app.use('/api/artists', artistRoutes); // New route for artists API
+app.use('/api/artists', artistRoutes);
+app.use('/api/users', userRoutes);
 
 // About page route
 app.get('/about', (req, res) => {
@@ -45,6 +46,14 @@ app.get('/api', (req, res) => {
                 createArtist: 'POST /api/artists',
                 updateArtist: 'PUT /api/artists/:id',
                 deleteArtist: 'DELETE /api/artists/:id'
+            },
+            users: {
+                register: 'POST /api/users/register',
+                login: 'POST /api/users/login',
+                getProfile: 'GET /api/users/profile',
+                getFavorites: 'GET /api/users/favorites',
+                addToFavorites: 'POST /api/users/favorites',
+                removeFromFavorites: 'DELETE /api/users/favorites/:artworkId'
             }
         }
     });

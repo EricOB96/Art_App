@@ -1,4 +1,3 @@
-// server/db.js
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
@@ -37,16 +36,18 @@ async function initializeDatabase() {
         const collections = await db.listCollections().toArray();
         const artworksExists = collections.some(col => col.name === 'artworks');
         const artistsExists = collections.some(col => col.name === 'artists');
+        const usersExists = collections.some(col => col.name === 'users');
 
         if (!artworksExists) {
             // Create artworks collection
             const artworksCollection = await db.createCollection('artworks');
 
-            // Try to load the full dataset
-            const fullArtworksPath = path.join(__dirname, '../Artworks.json');
+            // Try to load the full dataset first
+            const fullArtworksPath = path.join(__dirname, '../../Artworks.json');
 
             if (fs.existsSync(fullArtworksPath)) {
                 console.log('Loading full artworks dataset...');
+                // Load artworks in chunks to avoid memory issues
                 const rawData = fs.readFileSync(fullArtworksPath, 'utf8');
                 const fullData = JSON.parse(rawData);
 
@@ -67,7 +68,7 @@ async function initializeDatabase() {
             } else {
                 // Fall back to the sample data
                 console.log('Full dataset not found, loading sample data...');
-                const sampleData = require('../sample-data.json');
+                const sampleData = require('../../sample-data.json');
 
                 if (sampleData && sampleData.length > 0) {
                     await artworksCollection.insertMany(sampleData);
@@ -81,14 +82,14 @@ async function initializeDatabase() {
             const artistsCollection = await db.createCollection('artists');
 
             // Try to load the artists dataset
-            const artistsPath = path.join(__dirname, '../Artists.json');
+            const artistsPath = path.join(__dirname, '../../Artists.json');
 
             if (fs.existsSync(artistsPath)) {
                 console.log('Loading artists dataset...');
+                // Load artists in chunks to avoid memory issues
                 const rawData = fs.readFileSync(artistsPath, 'utf8');
                 const artistsData = JSON.parse(rawData);
 
-                // Load all artists in chunks to avoid memory issues
                 const chunkSize = 1000;
                 let imported = 0;
 
@@ -107,15 +108,23 @@ async function initializeDatabase() {
             }
         }
 
+        if (!usersExists) {
+            // Create users collection
+            await db.createCollection('users');
+            console.log('Created users collection');
+
+            // Create indexes for users
+            await db.collection('users').createIndex({ username: 1 }, { unique: true });
+            await db.collection('users').createIndex({ email: 1 }, { unique: true });
+        }
+
         // Create indexes for better performance
         await db.collection('artworks').createIndex({ Title: 1 });
         await db.collection('artworks').createIndex({ Artist: 1 });
+        await db.collection('artworks').createIndex({ Date: 1 });  // For year searches
+
         await db.collection('artists').createIndex({ DisplayName: 1 });
         await db.collection('artists').createIndex({ ConstituentID: 1 });
-
-        // Additional indexes for better search performance
-        await db.collection('artworks').createIndex({ Year: 1 });
-        await db.collection('artworks').createIndex({ Medium: 1 });
         await db.collection('artists').createIndex({ Nationality: 1 });
         await db.collection('artists').createIndex({ Gender: 1 });
 
