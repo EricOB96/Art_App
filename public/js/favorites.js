@@ -267,7 +267,7 @@ function showFavorites() {
 
       favorites.forEach((artwork) => {
         gridHTML += `
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-4 col-lg-8 mb-4">
                     <div class="card artwork-card h-100 shadow-sm">
                         <div class="card-img-top-container" style="height: 180px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa; overflow: hidden;">
                             <img src="${artwork.ImageURL || artwork.ThumbnailURL || '/images/no-image.png'}" 
